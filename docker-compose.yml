@@ -1,0 +1,30 @@
+version: "2"
+services:
+  gitlab:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: 'gitlab.example.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        gitlab_rails['gitlab_shell_ssh_port'] = 2224
+        # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+      - '81:80'
+      - '443:443'
+      - '122:22'
+    volumes:
+      - '/srv/gitlab/config:/etc/gitlab'
+      - '/srv/gitlab/logs:/var/log/gitlab'
+      - '/srv/gitlab/data:/var/opt/gitlab'
+
+  jenkins:
+    image: jenkinsci/blueocean
+    user: root
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "50000:50000"
+    volumes:
+      - /srv/jenkins/jenkins_data:/var/jenkins_home
+      - /srv/jenkins/home:/home
+      - /var/run/docker.sock:/var/run/docker.sock
